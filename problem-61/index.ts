@@ -18,6 +18,15 @@ let selectedNum6 = 0;
 let listSelectionNumberList = [];
 
 function getCyclicNumbers() {
+    listSelectionNumberList = [];
+
+    selectedNum1 = 0;
+    selectedNum2 = 0;
+    selectedNum3 = 0;
+    selectedNum4 = 0;
+    selectedNum5 = 0;
+    selectedNum6 = 0;
+
     const maxLimit = 9999;
     const triangleNumList = [];
     const squareNumList = [];
@@ -34,8 +43,6 @@ function getCyclicNumbers() {
         }
     }
 
-    console.log(triangleNumList);
-
     for (let i = 1; square(i) < maxLimit; i++) {
         const squareNumber = square(i);
 
@@ -43,8 +50,6 @@ function getCyclicNumbers() {
             squareNumList.push(squareNumber);
         }
     }
-
-    console.log(squareNumList);
 
     for (let i = 1; pentagonal(i) < maxLimit; i++) {
         const pentagonalNumber = pentagonal(i);
@@ -54,8 +59,6 @@ function getCyclicNumbers() {
         }
     }
 
-    console.log(pentagonalNumList);
-
     for (let i = 1; hexagonal(i) < maxLimit; i++) {
         const hexagonalNumber = hexagonal(i);
 
@@ -63,8 +66,6 @@ function getCyclicNumbers() {
             hexagonalNumList.push(hexagonalNumber);
         }
     }
-
-    console.log(hexagonalNumList);
 
     for (let i = 1; heptagonal(i) < maxLimit; i++) {
         const heptagonalNumber = heptagonal(i);
@@ -74,8 +75,6 @@ function getCyclicNumbers() {
         }
     }
 
-    console.log(heptagonalNumList);
-
     for (let i = 1; octagonal(i) < maxLimit; i++) {
         const octagonalNumber = octagonal(i);
 
@@ -84,18 +83,16 @@ function getCyclicNumbers() {
         }
     }
 
-    console.log(octagonalNumList);
+    createNewSortedNumList(
+        triangleNumList,
+        squareNumList,
+        heptagonalNumList,
+        octagonalNumList,
+        pentagonalNumList,
+        hexagonalNumList
+    );
 
-    // createNewSortedNumList(
-    //     triangleNumList,
-    //     squareNumList,
-    //     pentagonalNumList,
-    //     hexagonalNumList,
-    //     heptagonalNumList,
-    //     octagonalNumList
-    // );
-
-    return `${selectedNum1}, ${selectedNum2}, ${selectedNum3}`;
+    return `${selectedNum1}, ${selectedNum2}, ${selectedNum3}, ${selectedNum4}, ${selectedNum5}, ${selectedNum6}`;
 }
 
 function createNewSortedNumList(
@@ -140,7 +137,10 @@ function findCyclicPairs(
     let flag = false;
 
     triangleNumListEndSorted.forEach(num1 => {
-        if (getFirstTwoNumbers(num1Holder) !== getFirstTwoNumbers(num1)) {
+        if (
+            getFirstTwoNumbers(num1Holder) !== getFirstTwoNumbers(num1) &&
+            !flag
+        ) {
             num1Holder = num1;
             const _filteredTriangleNumListEndSorted = triangleNumListEndSorted.filter(
                 item => getFirstTwoNumbers(item) === getFirstTwoNumbers(num1)
@@ -159,19 +159,16 @@ function findCyclicPairs(
 
     if (!flag) {
         const numberList = getNumberList();
-        // console.log(numberList);
-        // console.log(listOrder[1]);
+        listSelectionNumberList.push(numberList);
 
-        // console.log(listOrder[1]);
-
-        // findCyclicPairs(
-        //     listOrder[1],
-        //     listOrder[numberList[0]],
-        //     listOrder[numberList[1]],
-        //     listOrder[numberList[2]],
-        //     listOrder[numberList[3]],
-        //     listOrder[numberList[4]]
-        // );
+        findCyclicPairs(
+            listOrder[1],
+            listOrder[numberList[0]],
+            listOrder[numberList[1]],
+            listOrder[numberList[2]],
+            listOrder[numberList[3]],
+            listOrder[numberList[4]]
+        );
     }
 }
 
@@ -216,7 +213,6 @@ function filterCyclicPairs(
                                 getLastTwoNumbers(list6Num) ===
                                 getFirstTwoNumbers(list5Num)
                         );
-                        console.log(_filteredList6);
 
                         _filteredList6.forEach(list6Num => {
                             const _filteredList1 = list1.filter(
@@ -224,8 +220,6 @@ function filterCyclicPairs(
                                     getLastTwoNumbers(list1Num) ===
                                     getFirstTwoNumbers(list6Num)
                             );
-
-                            console.log(_filteredList1);
 
                             _filteredList1.forEach(list1Num => {
                                 if (
@@ -241,6 +235,9 @@ function filterCyclicPairs(
                                     selectedNum1 = list1Num;
                                     selectedNum2 = list2Num;
                                     selectedNum3 = list3Num;
+                                    selectedNum4 = list4Num;
+                                    selectedNum5 = list5Num;
+                                    selectedNum6 = list6Num;
 
                                     flag = true;
                                 }
@@ -251,8 +248,6 @@ function filterCyclicPairs(
             });
         });
     });
-
-    console.log(flag);
 
     return flag;
 }
@@ -308,6 +303,20 @@ function getNumberList(): number[] {
             break;
         }
     }
+
+    const _filteredNum = listSelectionNumberList.filter(
+        item => JSON.stringify(item) === JSON.stringify(numberList)
+    );
+
+    if (_filteredNum.length > 0) {
+        getNumberList();
+    }
+
+    listSelectionNumberList.forEach(item => {
+        if (JSON.stringify(item) === JSON.stringify(numberList)) {
+            return item;
+        }
+    });
 
     return numberList;
 }
