@@ -110,13 +110,23 @@ function createNewSortedNumList(
 
 function findCyclicPairs(
     triangleNumListEndSorted: number[],
-    squareNumList: number[],
-    pentagonalNumList: number[],
-    hexagonalNumList: number[],
-    heptagonalNumList: number[],
-    octagonalNumList: number[]
+    list2: number[],
+    list3: number[],
+    list4: number[],
+    list5: number[],
+    list6: number[]
 ) {
+    const listOrder = {
+        1: triangleNumListEndSorted,
+        2: list2,
+        3: list3,
+        4: list4,
+        5: list5,
+        6: list6
+    };
     let num1Holder = 0;
+    let flag = false;
+
     triangleNumListEndSorted.forEach(num1 => {
         if (getFirstTwoNumbers(num1Holder) !== getFirstTwoNumbers(num1)) {
             num1Holder = num1;
@@ -124,17 +134,33 @@ function findCyclicPairs(
                 item => getFirstTwoNumbers(item) === getFirstTwoNumbers(num1)
             );
 
-            filterCyclicPairs(
+            flag = filterCyclicPairs(
                 _filteredTriangleNumListEndSorted,
-                squareNumList,
-                pentagonalNumList,
-                hexagonalNumList,
-                heptagonalNumList,
-                octagonalNumList,
-                triangleNumListEndSorted
+                list2,
+                list3,
+                list4,
+                list5,
+                list6
             );
         }
     });
+
+    if (!flag) {
+        const numberList = getNumberList();
+        // console.log(numberList);
+        // console.log(listOrder[1]);
+
+        // console.log(listOrder[1]);
+
+        // findCyclicPairs(
+        //     listOrder[1],
+        //     listOrder[numberList[0]],
+        //     listOrder[numberList[1]],
+        //     listOrder[numberList[2]],
+        //     listOrder[numberList[3]],
+        //     listOrder[numberList[4]]
+        // );
+    }
 }
 
 function filterCyclicPairs(
@@ -143,18 +169,9 @@ function filterCyclicPairs(
     list3: number[],
     list4: number[],
     list5: number[],
-    list6: number[],
-    triangleNumListEndSorted: number[]
+    list6: number[]
 ): boolean {
     let flag = false;
-    const listOrder = {
-        1: list1,
-        2: list2,
-        3: list3,
-        4: list4,
-        5: list5,
-        6: list6
-    };
 
     list1.forEach(num => {
         const _filteredList2 = list2.filter(
@@ -223,15 +240,7 @@ function filterCyclicPairs(
         });
     });
 
-    if (!flag) {
-        const numberList = getNumberList();
-        // console.log(numberList);
-        console.log(triangleNumListEndSorted);
-
-        // console.log(listOrder[1]);
-
-        // filterCyclicPairs(list1, list2, list3, list5, list4, list6);
-    }
+    console.log(flag);
 
     return flag;
 }
