@@ -29,59 +29,71 @@ function getCyclicNumbers() {
     for (let i = 1; triangle(i) < maxLimit; i++) {
         const triangleNumber = triangle(i);
 
-        if (isNumberContainFourDigits(triangleNumber)) {
+        if (isNumberContainFourDigitsAndNotStartWithZero(triangleNumber)) {
             triangleNumList.push(triangleNumber);
         }
     }
 
+    console.log(triangleNumList);
+
     for (let i = 1; square(i) < maxLimit; i++) {
         const squareNumber = square(i);
 
-        if (isNumberContainFourDigits(squareNumber)) {
+        if (isNumberContainFourDigitsAndNotStartWithZero(squareNumber)) {
             squareNumList.push(squareNumber);
         }
     }
 
+    console.log(squareNumList);
+
     for (let i = 1; pentagonal(i) < maxLimit; i++) {
         const pentagonalNumber = pentagonal(i);
 
-        if (isNumberContainFourDigits(pentagonalNumber)) {
+        if (isNumberContainFourDigitsAndNotStartWithZero(pentagonalNumber)) {
             pentagonalNumList.push(pentagonalNumber);
         }
     }
 
+    console.log(pentagonalNumList);
+
     for (let i = 1; hexagonal(i) < maxLimit; i++) {
         const hexagonalNumber = hexagonal(i);
 
-        if (isNumberContainFourDigits(hexagonalNumber)) {
+        if (isNumberContainFourDigitsAndNotStartWithZero(hexagonalNumber)) {
             hexagonalNumList.push(hexagonalNumber);
         }
     }
 
+    console.log(hexagonalNumList);
+
     for (let i = 1; heptagonal(i) < maxLimit; i++) {
         const heptagonalNumber = heptagonal(i);
 
-        if (isNumberContainFourDigits(heptagonalNumber)) {
+        if (isNumberContainFourDigitsAndNotStartWithZero(heptagonalNumber)) {
             heptagonalNumList.push(heptagonalNumber);
         }
     }
 
+    console.log(heptagonalNumList);
+
     for (let i = 1; octagonal(i) < maxLimit; i++) {
         const octagonalNumber = octagonal(i);
 
-        if (isNumberContainFourDigits(octagonalNumber)) {
+        if (isNumberContainFourDigitsAndNotStartWithZero(octagonalNumber)) {
             octagonalNumList.push(octagonalNumber);
         }
     }
 
-    createNewSortedNumList(
-        triangleNumList,
-        squareNumList,
-        pentagonalNumList,
-        hexagonalNumList,
-        heptagonalNumList,
-        octagonalNumList
-    );
+    console.log(octagonalNumList);
+
+    // createNewSortedNumList(
+    //     triangleNumList,
+    //     squareNumList,
+    //     pentagonalNumList,
+    //     hexagonalNumList,
+    //     heptagonalNumList,
+    //     octagonalNumList
+    // );
 
     return `${selectedNum1}, ${selectedNum2}, ${selectedNum3}`;
 }
@@ -312,6 +324,8 @@ function getLastTwoNumbers(num: number): number {
     return Number(num.toString().slice(0, 2));
 }
 
-function isNumberContainFourDigits(num: number): boolean {
-    return num.toString().length === 4;
+function isNumberContainFourDigitsAndNotStartWithZero(num: number): boolean {
+    const stringNumber = num.toString();
+
+    return stringNumber.length === 4 && stringNumber.slice(2, 3) !== '0';
 }
