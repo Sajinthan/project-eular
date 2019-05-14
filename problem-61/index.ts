@@ -18,6 +18,15 @@ let selectedNum6 = 0;
 let listSelectionNumberList = [];
 
 function getCyclicNumbers() {
+    listSelectionNumberList = [];
+
+    selectedNum1 = 0;
+    selectedNum2 = 0;
+    selectedNum3 = 0;
+    selectedNum4 = 0;
+    selectedNum5 = 0;
+    selectedNum6 = 0;
+
     const maxLimit = 9999;
     const triangleNumList = [];
     const squareNumList = [];
@@ -29,7 +38,7 @@ function getCyclicNumbers() {
     for (let i = 1; triangle(i) < maxLimit; i++) {
         const triangleNumber = triangle(i);
 
-        if (isNumberContainFourDigits(triangleNumber)) {
+        if (isNumberContainFourDigitsAndNotStartWithZero(triangleNumber)) {
             triangleNumList.push(triangleNumber);
         }
     }
@@ -37,7 +46,7 @@ function getCyclicNumbers() {
     for (let i = 1; square(i) < maxLimit; i++) {
         const squareNumber = square(i);
 
-        if (isNumberContainFourDigits(squareNumber)) {
+        if (isNumberContainFourDigitsAndNotStartWithZero(squareNumber)) {
             squareNumList.push(squareNumber);
         }
     }
@@ -45,7 +54,7 @@ function getCyclicNumbers() {
     for (let i = 1; pentagonal(i) < maxLimit; i++) {
         const pentagonalNumber = pentagonal(i);
 
-        if (isNumberContainFourDigits(pentagonalNumber)) {
+        if (isNumberContainFourDigitsAndNotStartWithZero(pentagonalNumber)) {
             pentagonalNumList.push(pentagonalNumber);
         }
     }
@@ -53,7 +62,7 @@ function getCyclicNumbers() {
     for (let i = 1; hexagonal(i) < maxLimit; i++) {
         const hexagonalNumber = hexagonal(i);
 
-        if (isNumberContainFourDigits(hexagonalNumber)) {
+        if (isNumberContainFourDigitsAndNotStartWithZero(hexagonalNumber)) {
             hexagonalNumList.push(hexagonalNumber);
         }
     }
@@ -61,7 +70,7 @@ function getCyclicNumbers() {
     for (let i = 1; heptagonal(i) < maxLimit; i++) {
         const heptagonalNumber = heptagonal(i);
 
-        if (isNumberContainFourDigits(heptagonalNumber)) {
+        if (isNumberContainFourDigitsAndNotStartWithZero(heptagonalNumber)) {
             heptagonalNumList.push(heptagonalNumber);
         }
     }
@@ -69,7 +78,7 @@ function getCyclicNumbers() {
     for (let i = 1; octagonal(i) < maxLimit; i++) {
         const octagonalNumber = octagonal(i);
 
-        if (isNumberContainFourDigits(octagonalNumber)) {
+        if (isNumberContainFourDigitsAndNotStartWithZero(octagonalNumber)) {
             octagonalNumList.push(octagonalNumber);
         }
     }
@@ -77,13 +86,13 @@ function getCyclicNumbers() {
     createNewSortedNumList(
         triangleNumList,
         squareNumList,
-        pentagonalNumList,
-        hexagonalNumList,
         heptagonalNumList,
-        octagonalNumList
+        octagonalNumList,
+        pentagonalNumList,
+        hexagonalNumList
     );
 
-    return `${selectedNum1}, ${selectedNum2}, ${selectedNum3}`;
+    return `${selectedNum1}, ${selectedNum2}, ${selectedNum3}, ${selectedNum4}, ${selectedNum5}, ${selectedNum6}`;
 }
 
 function createNewSortedNumList(
@@ -110,31 +119,57 @@ function createNewSortedNumList(
 
 function findCyclicPairs(
     triangleNumListEndSorted: number[],
-    squareNumList: number[],
-    pentagonalNumList: number[],
-    hexagonalNumList: number[],
-    heptagonalNumList: number[],
-    octagonalNumList: number[]
+    list2: number[],
+    list3: number[],
+    list4: number[],
+    list5: number[],
+    list6: number[]
 ) {
+    const listOrder = {
+        1: triangleNumListEndSorted,
+        2: list2,
+        3: list3,
+        4: list4,
+        5: list5,
+        6: list6
+    };
     let num1Holder = 0;
+    let flag = false;
+
     triangleNumListEndSorted.forEach(num1 => {
-        if (getFirstTwoNumbers(num1Holder) !== getFirstTwoNumbers(num1)) {
+        if (
+            getFirstTwoNumbers(num1Holder) !== getFirstTwoNumbers(num1) &&
+            !flag
+        ) {
             num1Holder = num1;
             const _filteredTriangleNumListEndSorted = triangleNumListEndSorted.filter(
                 item => getFirstTwoNumbers(item) === getFirstTwoNumbers(num1)
             );
 
-            filterCyclicPairs(
+            flag = filterCyclicPairs(
                 _filteredTriangleNumListEndSorted,
-                squareNumList,
-                pentagonalNumList,
-                hexagonalNumList,
-                heptagonalNumList,
-                octagonalNumList,
-                triangleNumListEndSorted
+                list2,
+                list3,
+                list4,
+                list5,
+                list6
             );
         }
     });
+
+    if (!flag) {
+        const numberList = getNumberList();
+        listSelectionNumberList.push(numberList);
+
+        findCyclicPairs(
+            listOrder[1],
+            listOrder[numberList[0]],
+            listOrder[numberList[1]],
+            listOrder[numberList[2]],
+            listOrder[numberList[3]],
+            listOrder[numberList[4]]
+        );
+    }
 }
 
 function filterCyclicPairs(
@@ -143,18 +178,9 @@ function filterCyclicPairs(
     list3: number[],
     list4: number[],
     list5: number[],
-    list6: number[],
-    triangleNumListEndSorted: number[]
+    list6: number[]
 ): boolean {
     let flag = false;
-    const listOrder = {
-        1: list1,
-        2: list2,
-        3: list3,
-        4: list4,
-        5: list5,
-        6: list6
-    };
 
     list1.forEach(num => {
         const _filteredList2 = list2.filter(
@@ -187,7 +213,6 @@ function filterCyclicPairs(
                                 getLastTwoNumbers(list6Num) ===
                                 getFirstTwoNumbers(list5Num)
                         );
-                        console.log(_filteredList6);
 
                         _filteredList6.forEach(list6Num => {
                             const _filteredList1 = list1.filter(
@@ -195,8 +220,6 @@ function filterCyclicPairs(
                                     getLastTwoNumbers(list1Num) ===
                                     getFirstTwoNumbers(list6Num)
                             );
-
-                            console.log(_filteredList1);
 
                             _filteredList1.forEach(list1Num => {
                                 if (
@@ -212,6 +235,9 @@ function filterCyclicPairs(
                                     selectedNum1 = list1Num;
                                     selectedNum2 = list2Num;
                                     selectedNum3 = list3Num;
+                                    selectedNum4 = list4Num;
+                                    selectedNum5 = list5Num;
+                                    selectedNum6 = list6Num;
 
                                     flag = true;
                                 }
@@ -222,16 +248,6 @@ function filterCyclicPairs(
             });
         });
     });
-
-    if (!flag) {
-        const numberList = getNumberList();
-        // console.log(numberList);
-        console.log(triangleNumListEndSorted);
-
-        // console.log(listOrder[1]);
-
-        // filterCyclicPairs(list1, list2, list3, list5, list4, list6);
-    }
 
     return flag;
 }
@@ -288,6 +304,20 @@ function getNumberList(): number[] {
         }
     }
 
+    const _filteredNum = listSelectionNumberList.filter(
+        item => JSON.stringify(item) === JSON.stringify(numberList)
+    );
+
+    if (_filteredNum.length > 0) {
+        getNumberList();
+    }
+
+    listSelectionNumberList.forEach(item => {
+        if (JSON.stringify(item) === JSON.stringify(numberList)) {
+            return item;
+        }
+    });
+
     return numberList;
 }
 
@@ -303,6 +333,8 @@ function getLastTwoNumbers(num: number): number {
     return Number(num.toString().slice(0, 2));
 }
 
-function isNumberContainFourDigits(num: number): boolean {
-    return num.toString().length === 4;
+function isNumberContainFourDigitsAndNotStartWithZero(num: number): boolean {
+    const stringNumber = num.toString();
+
+    return stringNumber.length === 4 && stringNumber.slice(2, 3) !== '0';
 }
