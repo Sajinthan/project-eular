@@ -11,17 +11,23 @@ function getLargeAnagramicSquares(wordList: string[]) {
 
     if (anagramicPairList.length > 0) {
         const squareNumbers = genSquareNumbers(wordListLength);
-        squareNumbers.reverse();
         const anagramicWordSquares = findAnagramicSquares(
             anagramicPairList,
             squareNumbers
         );
-        console.log(anagramicWordSquares);
+
+        if (anagramicWordSquares.length === 0) {
+            const remainingWordList = removeWordsByLength(
+                wordList,
+                wordListLength
+            );
+
+            getLargeAnagramicSquares(remainingWordList);
+        } else {
+            console.log(anagramicWordSquares);
+        }
     } else {
-        const remainingWordList = removeWordsByLength(
-            wordList,
-            sortedWordList[0].length
-        );
+        const remainingWordList = removeWordsByLength(wordList, wordListLength);
 
         getLargeAnagramicSquares(remainingWordList);
     }
@@ -88,10 +94,8 @@ function findAnagramicSquares(wordList: string[], numberList: number[]) {
     const anagramicWordSquares = [];
 
     wordList.forEach(wordPair => {
-        const wordIndexes = findCharacterPositions(wordPair);
-
         const anagramicPairNumber = findAnagramicSquareNumbers(
-            wordIndexes,
+            wordPair,
             numberList
         );
         if (anagramicPairNumber) {
@@ -103,12 +107,14 @@ function findAnagramicSquares(wordList: string[], numberList: number[]) {
 }
 
 function findAnagramicSquareNumbers(
-    wordIndexes: string,
+    wordPair: string,
     numberList: number[]
 ): string {
     let anagramicPairNumber = '';
 
     numberList.forEach(num => {
+        const wordIndexes = findCharacterPositions(wordPair);
+
         const predictedNumber = getNumberBasedOnWordPosition(wordIndexes, num);
 
         if (predictedNumber.toString().length === num.toString().length) {
@@ -116,7 +122,7 @@ function findAnagramicSquareNumbers(
                 item => item === predictedNumber
             );
 
-            if (foundNumber.length > 0) {
+            if (foundNumber.length > 0 && num !== foundNumber[0]) {
                 return (anagramicPairNumber = `${num.toString()} ${
                     foundNumber[0]
                 }`);
@@ -125,6 +131,10 @@ function findAnagramicSquareNumbers(
     });
 
     return anagramicPairNumber;
+}
+
+function isNumberValidForWord(wordPair: string, num: number): boolean {
+    const firstWord = wordPair.split(' ')[0];
 }
 
 function getNumberBasedOnWordPosition(
@@ -178,5 +188,5 @@ function genSquareNumbers(digitLength: number = 0): number[] {
         }
     }
 
-    return squareNumbers;
+    return squareNumbers.reverse();
 }

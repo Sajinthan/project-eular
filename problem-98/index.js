@@ -5,12 +5,17 @@ function getLargeAnagramicSquares(wordList) {
     var anagramicPairList = findAnagramPairs(getLengthyWordList);
     if (anagramicPairList.length > 0) {
         var squareNumbers = genSquareNumbers(wordListLength);
-        squareNumbers.reverse();
         var anagramicWordSquares = findAnagramicSquares(anagramicPairList, squareNumbers);
-        console.log(anagramicWordSquares);
+        if (anagramicWordSquares.length === 0) {
+            var remainingWordList = removeWordsByLength(wordList, wordListLength);
+            getLargeAnagramicSquares(remainingWordList);
+        }
+        else {
+            console.log(anagramicWordSquares);
+        }
     }
     else {
-        var remainingWordList = removeWordsByLength(wordList, sortedWordList[0].length);
+        var remainingWordList = removeWordsByLength(wordList, wordListLength);
         getLargeAnagramicSquares(remainingWordList);
     }
 }
@@ -62,26 +67,29 @@ function isAnagramicPair(firstWord, secondWord) {
 function findAnagramicSquares(wordList, numberList) {
     var anagramicWordSquares = [];
     wordList.forEach(function (wordPair) {
-        var wordIndexes = findCharacterPositions(wordPair);
-        var anagramicPairNumber = findAnagramicSquareNumbers(wordIndexes, numberList);
+        var anagramicPairNumber = findAnagramicSquareNumbers(wordPair, numberList);
         if (anagramicPairNumber) {
             anagramicWordSquares.push(wordPair + " " + anagramicPairNumber);
         }
     });
     return anagramicWordSquares;
 }
-function findAnagramicSquareNumbers(wordIndexes, numberList) {
+function findAnagramicSquareNumbers(wordPair, numberList) {
     var anagramicPairNumber = '';
     numberList.forEach(function (num) {
+        var wordIndexes = findCharacterPositions(wordPair);
         var predictedNumber = getNumberBasedOnWordPosition(wordIndexes, num);
         if (predictedNumber.toString().length === num.toString().length) {
             var foundNumber = numberList.filter(function (item) { return item === predictedNumber; });
-            if (foundNumber.length > 0) {
+            if (foundNumber.length > 0 && num !== foundNumber[0]) {
                 return (anagramicPairNumber = num.toString() + " " + foundNumber[0]);
             }
         }
     });
     return anagramicPairNumber;
+}
+function isNumberValidForWord(wordPair, num) {
+    var firstWord = wordPair.split(' ')[0];
 }
 function getNumberBasedOnWordPosition(wordIndexes, squareNumber) {
     var predictedNumber = '';
@@ -119,5 +127,5 @@ function genSquareNumbers(digitLength) {
             squareNumbers.push(Math.pow(i, 2));
         }
     }
-    return squareNumbers;
+    return squareNumbers.reverse();
 }
