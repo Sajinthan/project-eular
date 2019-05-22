@@ -98,6 +98,7 @@ function findAnagramicSquares(wordList: string[], numberList: number[]) {
             wordPair,
             numberList
         );
+
         if (anagramicPairNumber) {
             anagramicWordSquares.push(`${wordPair} ${anagramicPairNumber}`);
         }
@@ -113,19 +114,25 @@ function findAnagramicSquareNumbers(
     let anagramicPairNumber = '';
 
     numberList.forEach(num => {
-        const wordIndexes = findCharacterPositions(wordPair);
+        const validWordNumPair = isNumberValidForWord(wordPair, num);
 
-        const predictedNumber = getNumberBasedOnWordPosition(wordIndexes, num);
-
-        if (predictedNumber.toString().length === num.toString().length) {
-            const foundNumber = numberList.filter(
-                item => item === predictedNumber
+        if (validWordNumPair) {
+            const wordIndexes = findCharacterPositions(wordPair);
+            const predictedNumber = getNumberBasedOnWordPosition(
+                wordIndexes,
+                num
             );
 
-            if (foundNumber.length > 0 && num !== foundNumber[0]) {
-                return (anagramicPairNumber = `${num.toString()} ${
-                    foundNumber[0]
-                }`);
+            if (predictedNumber.toString().length === num.toString().length) {
+                const foundNumber = numberList.filter(
+                    item => item === predictedNumber
+                );
+
+                if (foundNumber.length > 0 && num !== foundNumber[0]) {
+                    return (anagramicPairNumber = `${num.toString()} ${
+                        foundNumber[0]
+                    }`);
+                }
             }
         }
     });
@@ -135,6 +142,30 @@ function findAnagramicSquareNumbers(
 
 function isNumberValidForWord(wordPair: string, num: number): boolean {
     const firstWord = wordPair.split(' ')[0];
+    const wordList = [];
+    const numberList = [];
+
+    for (let i = 0; i < num.toString().length; i++) {
+        const digit = num.toString().charAt(i);
+        const letter = firstWord.charAt(i);
+        const isExist = !!numberList.filter(item => item === digit)[0];
+        if (isExist) {
+            const digitIndex = numberList.indexOf(letter);
+            const wordFromList = wordList[digitIndex];
+
+            if (wordFromList === letter) {
+                numberList.push(digit);
+                wordList.push(letter);
+            } else {
+                return false;
+            }
+        } else {
+            numberList.push(digit);
+            wordList.push(letter);
+        }
+    }
+
+    return true;
 }
 
 function getNumberBasedOnWordPosition(
