@@ -7,7 +7,11 @@ function getLargeAnagramicSquares(wordList: string[]) {
     const getLengthyWordList = sortedWordList.filter(
         item => item.length === wordListLength
     );
-    const anagramicPairList = findAnagramPairs(getLengthyWordList);
+    const uniqueLettersWordList = removeDuplicatedLettersOfWords(
+        getLengthyWordList
+    );
+
+    const anagramicPairList = findAnagramPairs(uniqueLettersWordList);
 
     if (anagramicPairList.length > 0) {
         const squareNumbers = genSquareNumbers(wordListLength);
@@ -195,6 +199,34 @@ function findCharacterPositions(wordPair: string): string {
     }
 
     return wordIndexes;
+}
+
+function removeDuplicatedLettersOfWords(wordList: string[]): string[] {
+    const newWordList = [];
+
+    wordList.forEach(item => {
+        if (!isLetterDuplicated(item)) {
+            newWordList.push(item);
+        }
+    });
+
+    return newWordList;
+}
+
+function isLetterDuplicated(word: string): boolean {
+    const letterList = [];
+
+    for (let i = 0; i < word.toString().length; i++) {
+        const isExist = !!letterList.filter(item => item === word.charAt(i))[0];
+
+        if (!isExist) {
+            letterList.push(word.charAt(i));
+        } else {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 function removeWordsByLength(
