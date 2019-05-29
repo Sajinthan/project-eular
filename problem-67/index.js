@@ -1,0 +1,47 @@
+function calculateMaximumPathSum(numList) {
+    var maxNumbers = [];
+    var index = 0;
+    var sum = 0;
+    for (var x = 0; x < numList.length; x++) {
+        if (x === 0) {
+            maxNumbers.push(numList[x][index]);
+        }
+        if (x !== 0) {
+            var leftIndex = index;
+            var rightIndex = index + 1;
+            if (x + 1 < numList.length) {
+                var leftMaxPath = numList[x][leftIndex] + numList[x + 1][leftIndex] >
+                    numList[x][leftIndex] + numList[x + 1][leftIndex + 1]
+                    ? numList[x][leftIndex] + numList[x + 1][leftIndex]
+                    : numList[x][leftIndex] + numList[x + 1][leftIndex + 1];
+                var rightMaxPath = numList[x][rightIndex] + numList[x + 1][rightIndex] >
+                    numList[x][rightIndex] + numList[x + 1][rightIndex + 1]
+                    ? numList[x][rightIndex] + numList[x + 1][rightIndex]
+                    : numList[x][rightIndex] +
+                        numList[x + 1][rightIndex + 1];
+                if (leftMaxPath > rightMaxPath) {
+                    maxNumbers.push(numList[x][leftIndex]);
+                }
+                else {
+                    maxNumbers.push(numList[x][rightIndex]);
+                    index++;
+                }
+            }
+            if (x === numList.length - 1) {
+                var lastNum = maxNumbers[maxNumbers.length - 1];
+                if (lastNum + numList[x][index] >
+                    lastNum + numList[x][index + 1]) {
+                    maxNumbers.push(numList[x][index]);
+                }
+                else {
+                    maxNumbers.push(numList[x][index + 1]);
+                }
+            }
+        }
+    }
+    for (var i = 0; i < maxNumbers.length; i++) {
+        sum += maxNumbers[i];
+    }
+    console.log(maxNumbers);
+    return sum;
+}
